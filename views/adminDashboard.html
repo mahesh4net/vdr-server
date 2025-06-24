@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #121212; color: #eee; }
+    .stats { display: flex; flex-wrap: wrap; gap: 20px; }
+    .card { background: #1e1e1e; padding: 20px; border-radius: 8px; width: 200px; }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <a href="/admin/logout" style="color: #f55;">Logout</a>
+
+  <div class="stats">
+    <div class="card">Total Deals: <span id="totalDeals">0</span></div>
+    <div class="card">Accepted: <span id="acceptedDeals">0</span></div>
+    <div class="card">Pending: <span id="pendingDeals">0</span></div>
+    <div class="card">Rejected: <span id="rejectedDeals">0</span></div>
+    <div class="card">Total Users: <span id="totalUsers">0</span></div>
+    <div class="card">Total Spent: ₹<span id="totalSpent">0</span></div>
+  </div>
+
+  <canvas id="dealChart" width="600" height="300"></canvas>
+
+  <script>
+    fetch('/admin/stats', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('totalDeals').textContent = data.totalDeals;
+        document.getElementById('acceptedDeals').textContent = data.acceptedDeals;
+        document.getElementById('pendingDeals').textContent = data.pendingDeals;
+        document.getElementById('rejectedDeals').textContent = data.rejectedDeals;
+        document.getElementById('totalUsers').textContent = data.totalUsers;
+        document.getElementById('totalSpent').textContent = data.totalSpent;
+
+        new Chart(document.getElementById('dealChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Pending', 'Accepted', 'Rejected'],
+            datasets: [{
+              label: 'Deals Status',
+              data: [data.pendingDeals, data.acceptedDeals, data.rejectedDeals],
+              backgroundColor: ['orange', 'green', 'red']
+            }]
+          }
+        });
+      });
+  </script>
+</body>
+</html>
