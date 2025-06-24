@@ -52,8 +52,8 @@ export const register = async (req, res) => {
     res
       .cookie('token', token, {
         httpOnly: true,
-        sameSite: 'Lax',
-        secure: false,
+        sameSite: 'None',
+        secure: true,
       })
       .status(201)
       .json({ user: { id: newUser._id, fullname, email, role } });
